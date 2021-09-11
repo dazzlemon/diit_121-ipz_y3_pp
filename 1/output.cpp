@@ -1,6 +1,7 @@
 #include "class1.h"
 #include "class2.h"
 #include "function.h"
+#include <iostream>
 
 class Class3 {
     void method();
@@ -37,4 +38,8 @@ int main() {
 
   class1.field.function;
   class2.field.function();
+
+  std::string some_string1 = "class3.function()";
+  std::srting some_string2("class2.function()");
+  char char_array[] = "class3.function()";
 }
