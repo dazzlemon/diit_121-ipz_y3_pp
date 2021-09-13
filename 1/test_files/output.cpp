@@ -4,7 +4,7 @@
 #include <iostream>
 
 class Class3 {
-    void function();
+    void method();
 }
 
 void function();
@@ -25,7 +25,7 @@ int main() {
 
   class1.function();
   class2.function();
-  class3.function();
+  class3.method();
   class4.function();
 
   function();
