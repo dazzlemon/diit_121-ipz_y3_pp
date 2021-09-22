@@ -94,7 +94,7 @@ namespace Refactor.Tests
         public void Rename_MethodNameInDifferentObjects()
         {
             var refactor = new Refactor();
-            string CodeText =
+            string codeText =
                    @" 
                       className1 objectName1;
                       className2 objectName2;
