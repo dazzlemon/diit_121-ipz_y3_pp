@@ -14,8 +14,8 @@ namespace Refactor.Tests {
         [Fact] //2
         public void Rename_CaseWithSpacesBetweenBrackets() {
             var refactor = new Refactor();
-            string result = refactor.RenameMethod("func", "method", "void func     ();");
-            string expected = "void method     ();";
+            string result = refactor.RenameMethod("func", "method", "void func ();");
+            string expected = "void method ();";
             Assert.Equal(expected, result);
         }
 
@@ -79,20 +79,16 @@ namespace Refactor.Tests {
         public void Rename_MethodNameInDifferentObjects() {
             var refactor = new Refactor();
             string codeText =
-                   @" 
-                      className1 objectName1;
-                      className2 objectName2;
-                      objectName1.func();
-                      objectName2.func();
-                    ";
+@"className1 objectName1;
+className2 objectName2;
+objectName1.func();
+objectName2.func();";
             string result = refactor.RenameMethod("func", "method", codeText);
             string expected =
-                   @" 
-                      className1 objectName1;
-                      className2 objectName2;
-                      objectName1.method();
-                      objectName2.method();
-                    ";
+@"className1 objectName1;
+className2 objectName2;
+objectName1.method();
+objectName2.method();";
             Assert.Equal(expected, result);
         }
 
@@ -100,16 +96,12 @@ namespace Refactor.Tests {
         public void Rename_MethodNameInPointerToFunction() {
             var refactor = new Refactor();
             string CodeText =
-                   @"
-                    void func ( void (*f)(int) );
-                    void func2 ( void (*func)(int) );
-                    ";
+@"void func ( void (*f)(int) );
+void func2 ( void (*func)(int) );";
             string result = refactor.RenameMethod("func", "method", CodeText);
             string expected =
-                   @" 
-                    void method ( void (*f)(int) );
-                    void func2 ( void (*method)(int) );
-                    ";
+@"void method ( void (*f)(int) );
+void func2 ( void (*method)(int) );";
             Assert.Equal(expected, result);
         }
 
@@ -117,22 +109,16 @@ namespace Refactor.Tests {
         public void Rename_ComplexCase1() {
             var refactor = new Refactor();
             string CodeText =
-                   @"
-                      //void func(int parameter) some text
-                      void func(int parameter)
-                      {
-                      std::cout << ""void func() has "" << parameter << std::endl;
-                      }
-                    ";
+@"// void func(int parameter) some text
+void func(int parameter) {
+    std::cout << ""void func() has "" << parameter << std::endl;
+}";
             string result = refactor.RenameMethod("func", "method", CodeText);
             string expected =
-                   @" 
-                      //void func(int parameter) some text
-                      void method(int parameter)
-                      {
-                      std::cout << ""void func() has "" << parameter << std::endl;
-                      }
-                    ";
+@"// void func(int parameter) some text
+void method(int parameter) {
+    std::cout << ""void func() has "" << parameter << std::endl;
+}";
             Assert.Equal(expected, result);
         }
 
@@ -140,26 +126,20 @@ namespace Refactor.Tests {
         public void Rename_ComplexCase2() {
             var refactor = new Refactor();
             string CodeText =
-                   @" 
-                      //void func(int parameter) some text
-                      void func2(int parameter)
-                      {
-                      className objectName;
-                      int randomNumber1 = func();
-                      int randomNumber2 = objectName.func();
-                      }
-                    ";
+@"// void func(int parameter) some text
+void func2(int parameter) {
+    className objectName;
+    int randomNumber1 = func();
+    int randomNumber2 = objectName.func();
+}";
             string result = refactor.RenameMethod("func", "method", CodeText);
             string expected =
-                   @" 
-                      //void func(int parameter) some text
-                      void func2(int parameter)
-                      {
-                      className objectName;
-                      int randomNumber1 = method();
-                      int randomNumber2 = objectName.method();
-                      }
-                    ";
+@"// void func(int parameter) some text
+void func2(int parameter) {
+    className objectName;
+    int randomNumber1 = method();
+    int randomNumber2 = objectName.method();
+}";
             Assert.Equal(expected, result);
         }
     }
