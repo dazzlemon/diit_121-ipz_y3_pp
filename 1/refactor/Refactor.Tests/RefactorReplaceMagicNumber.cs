@@ -53,7 +53,7 @@ func(area);"
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    public class RefactorReplaceMagicNumber {
+    public class RefactorReplaceMagicNumberTest {
         [Theory]
         [ClassData(typeof(ReplaceMagicNumberTestDataGenerator))]
         public void ReplaceMagicNumberTest(string number, string name, string input, string expected) {
