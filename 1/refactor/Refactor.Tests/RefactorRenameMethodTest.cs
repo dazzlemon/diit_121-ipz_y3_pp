@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Xunit;
 
 namespace Refactor.Tests {
-    public class TestDataGenerator : IEnumerable<object[]> {
+    public class RenameMethodTestDataGenerator : IEnumerable<object[]> {
         private readonly List<object[]> _data = new List<object[]> {
-            //{oldName, newName, input, expected}// TODO: put in class?
+            // {oldName, newName, input, expected}// TODO: put in class?
             new object[] {"func", "method", "void func();", "void method();"},
             new object[] {"func", "method", "void func ();", "void method ();"},
             new object[] {"func", "method", "int func(int parameter);", "int method(int parameter);"},
@@ -68,7 +68,7 @@ void func2(int parameter) {
 
     public class RefactorRenameMethodTest {
         [Theory]
-        [ClassData(typeof(TestDataGenerator))]
+        [ClassData(typeof(RenameMethodTestDataGenerator))]
         public void RenameMethodTest(string oldName, string newName, string input, string expected) {
             var refactor = new Refactor();
 
