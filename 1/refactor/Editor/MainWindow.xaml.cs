@@ -67,6 +67,7 @@ namespace Editor
                     methodPropertiesWindow.NewMethodName,
                     fileContent);
                 textEditor.Text = refactoredText;
+                fileContent = refactoredText;
             }
         }
 
@@ -80,6 +81,7 @@ namespace Editor
                        magicNumberPropertiesWindow.NewMagicNumberName,
                        fileContent);
                 textEditor.Text = refactoredText;
+                fileContent = refactoredText;
             }
         }
     }
