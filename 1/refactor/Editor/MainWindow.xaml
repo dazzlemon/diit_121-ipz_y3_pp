@@ -1,0 +1,28 @@
+﻿<Window x:Class="Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:local="clr-namespace:Editor"
+        mc:Ignorable="d"
+        Title="Refactor editor" Height="450" Width="800">
+    <Grid>
+        <Menu Height="25" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Click="OpenFile_Click"></MenuItem>
+                <MenuItem Header="Save" Click="SaveFile_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Refactor">
+                <MenuItem Header="Method name" Click="RefactorMethodName_Click"></MenuItem>
+                <MenuItem Header="Magick number" Click="RefactorMagickNumber_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <avalon:TextEditor
+            Name="textEditor"
+            ShowLineNumbers="True"
+            FontFamily="Consolas"
+            SyntaxHighlighting="C++"
+            FontSize="10pt" Margin="0,25,0,0"/>
+    </Grid>
+</Window>
