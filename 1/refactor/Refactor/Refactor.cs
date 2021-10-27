@@ -10,17 +10,41 @@ namespace Refactor
         public string RenameMethod(string oldName, string newName, string fileContents)
         {
             var strings = MethodIndexes(oldName, fileContents);
-            var fileContents_ = new string(fileContents);
-            for (int i = 0; i < strings.Count; i++)
+            fileContents = ReplaceByIndexes(fileContents, strings, oldName, newName);
+            return fileContents;
+        }
+
+        public string ReplaceMagicNumber(string number, string CName, string fileContents)
+        {
+            var type = NumericType(number);
+            if (type is null)
             {
-                fileContents_ = fileContents_
-                    .Remove(strings[i], oldName.Length)
-                    .Insert(strings[i], newName);
-                strings = strings
-                    .Select(x => x - oldName.Length + newName.Length)
+                throw new ArgumentException($"{number} is not a number");
+            }
+
+            var strings = MagicNumberIndexes(number, fileContents);
+            if (!strings.Any())
+            {
+                return fileContents;
+            }
+
+            fileContents = ReplaceByIndexes(fileContents, strings, number, CName);
+            return $"const {type} {CName} = {number};\r\n" + fileContents;
+        }
+
+        private string ReplaceByIndexes(string str, IEnumerable<int> indexes, string old, string new_)
+        {
+            var indexes_ = new List<int>(indexes);
+            for (int i = 0; i < indexes_.Count; i++)
+            {
+                str = str
+                    .Remove(indexes_[i], old.Length)
+                    .Insert(indexes_[i], new_);
+                indexes_ = indexes_
+                    .Select(x => x - old.Length + new_.Length)
                     .ToList();
             }
-            return fileContents_;
+            return str;
         }
 
         private List<int> Indexes(string item, string fileContents, Func<int, bool> checkIndex) {
@@ -69,32 +93,6 @@ namespace Refactor
                 }
             }
             return true;
-        }
-
-        public string ReplaceMagicNumber(string number, string CName, string fileContents)
-        {
-            var type = NumericType(number);
-            if (type is null)
-            {
-                throw new ArgumentException($"{number} is not a number");
-            }
-
-            var strings = MagicNumberIndexes(number, fileContents);
-            var fileContents_ = new string(fileContents);
-            if (!strings.Any())
-            {
-                return fileContents_;
-            }
-
-            for (int i = 0; i < strings.Count; i++)
-            {
-                fileContents_ = fileContents_.Remove(strings[i], number.Length)
-                                             .Insert(strings[i], CName);
-                strings = strings
-                    .Select(x => x - number.Length + CName.Length)
-                    .ToList();
-            }
-            return $"const {type} {CName} = {number};\r\n" + fileContents_;
         }
 
         public string NumericType(string number) {
