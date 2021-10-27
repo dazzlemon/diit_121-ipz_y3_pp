@@ -26,24 +26,32 @@ namespace Refactor {
             int commentStart = 0;
             foreach (var pair in PairwiseStr(fileContents)) {
                 // start of comment
-                inSingleComment = pair == "//";
-                inMultiComment  = pair == "/*" && !inSingleComment;
-                if (inSingleComment || inMultiComment) {
+                var inSingleComment_ = pair == "//";
+                var inMultiComment_  = pair == "/*" && !inSingleComment;
+                if (!inSingleComment && inSingleComment_ ||
+                    !inMultiComment  && inMultiComment_) {
                     commentStart = index;
                 } 
                 
                 // end of comment
-                bool notInSingleComment = inSingleComment && pair[1] == '\n';
+                bool notInSingleComment = inSingleComment && pair[0] == '\n';
                 bool notInMultiComment  = inMultiComment  && pair    == "*/";
-                if (notInSingleComment || notInMultiComment) {
-                    comments.Append((commentStart, index));
+             
+                inSingleComment |= inSingleComment_;
+                inMultiComment  |= inMultiComment_;
+                if ( notInSingleComment || notInMultiComment) {
+                    inSingleComment = false;
+                    inMultiComment = false;
+                    comments.Add((commentStart, index));
                 }
 
-                inSingleComment = !notInSingleComment;
-                inMultiComment  = !notInMultiComment;
 
-                index += 2;
+                index++;
             }
+            if (inSingleComment || inMultiComment) {
+                comments.Add((commentStart, index));
+            }
+
             return comments;
         }
     }

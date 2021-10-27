@@ -15,12 +15,13 @@ namespace Refactor.Tests {
 not a comment
 // */
 ";
+            var expected = new List<(int, int)>{
+                (2, 8),
+                (9, 30),
+                (46, 52)
+            };
 
-            Assert.Equal(refactor.Comments(str), new List<(int, int)>{
-                (0, 4),
-                (5, 26),
-                (40, 44)
-            });
+            Assert.Equal(expected, refactor.Comments(str));
         }
     }
 }
