@@ -73,7 +73,7 @@ void func2(int parameter) {
             var refactor = new Refactor();
 
             string output = refactor.RenameMethod(oldName, newName, input);
-            Assert.Equal(output, expected);
+            Assert.Equal(expected, output);
         }
     }
 }

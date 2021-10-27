@@ -28,8 +28,9 @@ namespace Refactor {
                     if (inCode) {
                         strings.Add(index);
                     }
+                    start = index + oldName.Length;
                 }
-                start++;
+                
             }
 
             for (int i = 0; i < strings.Count; i++){
