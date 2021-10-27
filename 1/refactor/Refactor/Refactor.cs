@@ -58,8 +58,7 @@ namespace Refactor
             return strings;
         }
 
-        public string ReplaceMagicNumber(string number, string CName, string fileContents)
-        {
+        private List<int> MagicNumberIndexes(string number, string fileContents) {
             var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
             var strings = new List<int>();
             int start = 0;
@@ -90,22 +89,23 @@ namespace Refactor
                     start = index + number.Length;
                 }
             }
+            return strings;
+        }
 
+        public string ReplaceMagicNumber(string number, string CName, string fileContents)
+        {
+            var strings = MagicNumberIndexes(number, fileContents);
             var fileContents_ = new string(fileContents);
             for (int i = 0; i < strings.Count; i++)
             {
-                fileContents_ = fileContents_.Remove(strings[i], number.Length);
-                fileContents_ = fileContents_.Insert(strings[i], CName);
-                for (int j = i; j < strings.Count; j++)
-                {
-                    strings[j] = strings[j] - number.Length + CName.Length;
-                }
+                fileContents_ = fileContents_.Remove(strings[i], number.Length)
+                                             .Insert(strings[i], CName);
+                strings = strings
+                    .Select(x => x - number.Length + CName.Length)
+                    .ToList();
             }
-            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
-            bool isInteger = int.TryParse(number, out _);
-            string type = isDouble ? "double"
-                                   : isInteger ? "integer"
-                                               : null;
+            
+            var type = NumericType(number);
             if (!strings.Any())
             {
                 return fileContents_;
@@ -115,6 +115,14 @@ namespace Refactor
                 throw new ArgumentException($"{number} is not a number");
             }
             return $"const {type} {CName} = {number};\r\n" + fileContents_;
+        }
+
+        public string NumericType(string number) {
+            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
+            bool isInteger = int.TryParse(number, out _);
+            return isDouble ? "double"
+                            : isInteger ? "integer"
+                                        : null;
         }
 
         public static IEnumerable<String> PairwiseStr(String str)
