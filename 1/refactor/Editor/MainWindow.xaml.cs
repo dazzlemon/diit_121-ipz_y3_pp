@@ -29,12 +29,6 @@ namespace Editor
         public MainWindow()
         {
             InitializeComponent();
-
-            var refactor = new Refactor.Refactor();
-
-            var abobus = new string[] { "func", "method", "void func();", "void method();" };
-
-            var aboba = refactor.RenameMethod(abobus[0], abobus[1], abobus[2]);
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)

@@ -8,7 +8,6 @@ namespace Refactor.Tests {
         private readonly List<object[]> _data = new List<object[]> {
             // {oldName, newName, input, expected}// TODO: put in class?
             new object[] {"func", "method", "void func();", "void method();"},
-            new object[] {"func", "method", "void func ();", "void method ();"},
             new object[] {"func", "method", "int func(int parameter);", "int method(int parameter);"},
             new object[] {"func", "method", "string s = \" void func();\"", "string s = \" void func();\""},
             new object[] {"func", "method", "int func = 0;", "int func = 0;"},
