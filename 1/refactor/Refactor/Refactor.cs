@@ -34,9 +34,9 @@ namespace Refactor {
             }
 
             for (int i = 0; i < strings.Count; i++){
-                fileContents_.Remove(strings[i], oldName.Length);
-                fileContents_.Insert(strings[i], newName);
-                for (int j = i+1; j < strings.Count; j++)
+                fileContents_ = fileContents_.Remove(strings[i], oldName.Length);
+                fileContents_ = fileContents_.Insert(strings[i], newName);
+                for (int j = i; j < strings.Count; j++)
                 {
                     strings[j] = strings[j] - oldName.Length + newName.Length;
                 }

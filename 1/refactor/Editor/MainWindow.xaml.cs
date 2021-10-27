@@ -32,16 +32,9 @@ namespace Editor
 
             var refactor = new Refactor.Refactor();
 
-            var str = @"
-// ""this is a comment ""
-""not a comment""
-";
-            var expected = new List<(int, int)>{
-                (2, 8),
-                (9, 30),
-            };
+            var abobus = new string[] { "func", "method", "void func();", "void method();" };
 
-            var aboba = refactor.Quotes(str);
+            var aboba = refactor.RenameMethod(abobus[0], abobus[1], abobus[2]);
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
