@@ -101,22 +101,18 @@ namespace Refactor
             bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double_);
             int int_;
             bool isInteger = int.TryParse(number, out int_);
+            string type = isDouble ? "double"
+                                   : isInteger ? "integer"
+                                               : null;
             if (!strings.Any())
             {
                 return fileContents_;
             }
-            if (isInteger)
-            {
-                return $"const int {CName} = {number};\r\n" + fileContents_;
-            }
-            else if (isDouble)
-            {
-                return $"const double {CName} = {number};\r\n" + fileContents_;
-            }
-            else
+            if (type is null)
             {
                 throw new ArgumentException($"{number} is not a number");
             }
+            return $"const {type} {CName} = {number};\r\n" + fileContents_;
         }
 
         public static IEnumerable<String> PairwiseStr(String str)
