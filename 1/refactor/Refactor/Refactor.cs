@@ -34,17 +34,7 @@ namespace Refactor
                     break;
                 else
                 {
-                    bool inCode = true;
-                    foreach (var comment in commentsAndQuotes)
-                    {
-                        if (index > comment.Item1 && index < comment.Item2)
-                        {
-                            inCode = false;
-                            break;
-                        }
-                    }
-
-                    if (inCode)
+                    if (IsInCode(index, commentsAndQuotes))
                     {
                         if (fileContents[index - 1] == '.' ||
                             fileContents[index - 1] == ' ' &&
@@ -69,17 +59,7 @@ namespace Refactor
                     break;
                 else
                 {
-                    bool inCode = true;
-                    foreach (var comment in commentsAndQuotes)
-                    {
-                        if (index > comment.Item1 && index < comment.Item2)
-                        {
-                            inCode = false;
-                            break;
-                        }
-                    }
-
-                    if (inCode)
+                    if (IsInCode(index, commentsAndQuotes))
                     {
                         if (!Char.IsLetterOrDigit(fileContents[index - 1]) &&
                             !Char.IsLetterOrDigit(fileContents[index + number.Length])
@@ -92,10 +72,32 @@ namespace Refactor
             return strings;
         }
 
+        private bool IsInCode(int index, IEnumerable<(int, int)> commentsAndQuotes) {
+            foreach (var range in commentsAndQuotes)
+            {
+                if (index > range.Item1 && index < range.Item2)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public string ReplaceMagicNumber(string number, string CName, string fileContents)
         {
+            var type = NumericType(number);
+            if (type is null)
+            {
+                throw new ArgumentException($"{number} is not a number");
+            }
+
             var strings = MagicNumberIndexes(number, fileContents);
             var fileContents_ = new string(fileContents);
+            if (!strings.Any())
+            {
+                return fileContents_;
+            }
+
             for (int i = 0; i < strings.Count; i++)
             {
                 fileContents_ = fileContents_.Remove(strings[i], number.Length)
@@ -103,16 +105,6 @@ namespace Refactor
                 strings = strings
                     .Select(x => x - number.Length + CName.Length)
                     .ToList();
-            }
-            
-            var type = NumericType(number);
-            if (!strings.Any())
-            {
-                return fileContents_;
-            }
-            if (type is null)
-            {
-                throw new ArgumentException($"{number} is not a number");
             }
             return $"const {type} {CName} = {number};\r\n" + fileContents_;
         }
