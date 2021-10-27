@@ -98,8 +98,8 @@ namespace Refactor
         public string NumericType(string number) {
             bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
             bool isInteger = int.TryParse(number, out _);
-            return isDouble ? "double"
-                            : isInteger ? "integer"
+            return isInteger ? "int"
+                             : isDouble ? "double"
                                         : null;
         }
 
