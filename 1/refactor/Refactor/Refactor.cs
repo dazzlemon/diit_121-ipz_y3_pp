@@ -97,10 +97,8 @@ namespace Refactor
                     strings[j] = strings[j] - number.Length + CName.Length;
                 }
             }
-            double double_;
-            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double_);
-            int int_;
-            bool isInteger = int.TryParse(number, out int_);
+            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
+            bool isInteger = int.TryParse(number, out _);
             string type = isDouble ? "double"
                                    : isInteger ? "integer"
                                                : null;
