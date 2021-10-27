@@ -29,6 +29,19 @@ namespace Editor
         public MainWindow()
         {
             InitializeComponent();
+
+            var refactor = new Refactor.Refactor();
+
+            var str = @"
+// ""this is a comment ""
+""not a comment""
+";
+            var expected = new List<(int, int)>{
+                (2, 8),
+                (9, 30),
+            };
+
+            var aboba = refactor.Quotes(str);
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)

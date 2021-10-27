@@ -5,9 +5,44 @@ using System.Linq;
 namespace Refactor {
     public class Refactor {
         public string RenameMethod(string oldName, string newName, string fileContents) {
-            // find comments (start, length)
-            // find strings  (start, length)
-            throw new NotImplementedException("Not implemented yet.");
+            var fileContents_ = new string(fileContents);
+            var comments = Comments(fileContents_);
+            var quotes = Quotes(fileContents_);
+
+            var strings = new List<int>();
+
+            int start = 0;
+            while (start < fileContents_.Length) {
+                int index = fileContents_.IndexOf(oldName, start);
+                if (index == -1)
+                    break;
+                else {
+                    bool inCode = true;
+                    foreach (var comment in comments.Concat(quotes)) {
+                        if (index > comment.Item1 && index < comment.Item2) {
+                            inCode = false;
+                            break;
+                        }
+                    }
+
+                    if (inCode) {
+                        strings.Add(index);
+                    }
+                }
+                start++;
+            }
+
+            for (int i = 0; i < strings.Count; i++){
+                fileContents_.Remove(strings[i], oldName.Length);
+                fileContents_.Insert(strings[i], newName);
+                for (int j = i+1; j < strings.Count; j++)
+                {
+                    strings[j] = strings[j] - oldName.Length + newName.Length;
+                }
+            }
+            return fileContents_;
+
+           // throw new NotImplementedException("Not implemented yet.");
         }
         
         public string ReplaceMagicNumber(string number, string CName, string fileContents) {
@@ -18,8 +53,37 @@ namespace Refactor {
             return str.Zip(str.Skip(1), (a, b) => "" + a + b);
         }
 
+        public List<(int, int)> Quotes(string fileContents) {
+            var quotes = new List<(int, int)>();
+            bool inQuotes = false;
+            int index = 0;
+            int quotesStart = 0;
+            foreach (var ch in fileContents) {
+                // start of quotes
+                var inQuotes_ = ch == '\"';
+                if (!inQuotes && inQuotes_) {
+                    quotesStart = index;
+                }
+
+                // end of quotes
+                bool notInQuotes = inQuotes && ch == '\"';
+
+                inQuotes |= inQuotes_;
+                if (notInQuotes) {
+                    inQuotes = false;
+                    quotes.Add((quotesStart, index));
+                }
+                index++;
+            }
+            if (inQuotes) {
+                quotes.Add((quotesStart, index));
+            }
+
+            return quotes;
+        }
+
         public List<(int, int)> Comments(string fileContents) {
-            List<(int, int)> comments = new List<(int, int)>();
+            var comments = new List<(int, int)>();
             bool inSingleComment = false;
             bool inMultiComment  = false;
             int index = 0;
@@ -44,7 +108,6 @@ namespace Refactor {
                     inMultiComment = false;
                     comments.Add((commentStart, index));
                 }
-
 
                 index++;
             }
