@@ -9,67 +9,33 @@ namespace Refactor
     {
         public string RenameMethod(string oldName, string newName, string fileContents)
         {
+            var strings = MethodIndexes(oldName, fileContents);
             var fileContents_ = new string(fileContents);
-            var comments = Comments(fileContents_);
-            var quotes = Quotes(fileContents_);
-            var strings = new List<int>();
-            int start = 0;
-            while (start < fileContents_.Length)
-            {
-                int index = fileContents_.IndexOf(oldName, start);
-                if (index == -1)
-                    break;
-                else
-                {
-                    bool inCode = true;
-                    foreach (var comment in comments.Concat(quotes))
-                    {
-                        if (index > comment.Item1 && index < comment.Item2)
-                        {
-                            inCode = false;
-                            break;
-                        }
-                    }
-
-                    if (inCode)
-                    {
-                        if (fileContents_[index - 1] == '.' ||
-                           fileContents_[index - 1] == ' '
-                            && fileContents_[index + oldName.Length] == '(')
-                            strings.Add(index);
-                    }
-                    start = index + oldName.Length;
-                }
-            }
-
             for (int i = 0; i < strings.Count; i++)
             {
-                fileContents_ = fileContents_.Remove(strings[i], oldName.Length);
-                fileContents_ = fileContents_.Insert(strings[i], newName);
-                for (int j = i; j < strings.Count; j++)
-                {
-                    strings[j] = strings[j] - oldName.Length + newName.Length;
-                }
+                fileContents_ = fileContents_
+                    .Remove(strings[i], oldName.Length)
+                    .Insert(strings[i], newName);
+                strings = strings
+                    .Select(x => x - oldName.Length + newName.Length)
+                    .ToList();
             }
             return fileContents_;
         }
 
-        public string ReplaceMagicNumber(string number, string CName, string fileContents)
-        {
-            var fileContents_ = new string(fileContents);
-            var comments = Comments(fileContents_);
-            var quotes = Quotes(fileContents_);
+        private List<int> MethodIndexes(string name, string fileContents) {
+            var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
             var strings = new List<int>();
             int start = 0;
-            while (start < fileContents_.Length)
+            while (start < fileContents.Length)
             {
-                int index = fileContents_.IndexOf(number, start);
+                int index = fileContents.IndexOf(name, start);
                 if (index == -1)
                     break;
                 else
                 {
                     bool inCode = true;
-                    foreach (var comment in comments.Concat(quotes))
+                    foreach (var comment in commentsAndQuotes)
                     {
                         if (index > comment.Item1 && index < comment.Item2)
                         {
@@ -80,14 +46,52 @@ namespace Refactor
 
                     if (inCode)
                     {
-                        if (!Char.IsLetterOrDigit(fileContents_[index - 1])
-                            && !Char.IsLetterOrDigit(fileContents_[index + number.Length]))
+                        if (fileContents[index - 1] == '.' ||
+                            fileContents[index - 1] == ' ' &&
+                            fileContents[index + name.Length] == '('
+                        )
+                            strings.Add(index);
+                    }
+                    start = index + name.Length;
+                }
+            }
+            return strings;
+        }
+
+        public string ReplaceMagicNumber(string number, string CName, string fileContents)
+        {
+            var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
+            var strings = new List<int>();
+            int start = 0;
+            while (start < fileContents.Length)
+            {
+                int index = fileContents.IndexOf(number, start);
+                if (index == -1)
+                    break;
+                else
+                {
+                    bool inCode = true;
+                    foreach (var comment in commentsAndQuotes)
+                    {
+                        if (index > comment.Item1 && index < comment.Item2)
+                        {
+                            inCode = false;
+                            break;
+                        }
+                    }
+
+                    if (inCode)
+                    {
+                        if (!Char.IsLetterOrDigit(fileContents[index - 1]) &&
+                            !Char.IsLetterOrDigit(fileContents[index + number.Length])
+                        )
                             strings.Add(index);
                     }
                     start = index + number.Length;
                 }
             }
 
+            var fileContents_ = new string(fileContents);
             for (int i = 0; i < strings.Count; i++)
             {
                 fileContents_ = fileContents_.Remove(strings[i], number.Length);
