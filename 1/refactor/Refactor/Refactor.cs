@@ -23,53 +23,41 @@ namespace Refactor
             return fileContents_;
         }
 
-        private List<int> MethodIndexes(string name, string fileContents) {
+        private List<int> Indexes(string item, string fileContents, Func<int, bool> checkIndex) {
             var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
             var strings = new List<int>();
             int start = 0;
             while (start < fileContents.Length)
             {
-                int index = fileContents.IndexOf(name, start);
+                int index = fileContents.IndexOf(item, start);
                 if (index == -1)
-                    break;
-                else
                 {
-                    if (IsInCode(index, commentsAndQuotes))
-                    {
-                        if (fileContents[index - 1] == '.' ||
-                            fileContents[index - 1] == ' ' &&
-                            fileContents[index + name.Length] == '('
-                        )
-                            strings.Add(index);
-                    }
-                    start = index + name.Length;
+                    break;
                 }
+                else if (IsInCode(index, commentsAndQuotes) && checkIndex(index))
+                {
+                    strings.Add(index);
+                }
+                start = index + item.Length;
             }
             return strings;
         }
 
+        private List<int> MethodIndexes(string name, string fileContents) {
+            return Indexes(name, fileContents, (x) => {
+                return
+                    fileContents[x - 1] == '.' ||
+                    fileContents[x - 1] == ' ' &&
+                    fileContents[x + name.Length] == '(';
+            });
+        }
+
         private List<int> MagicNumberIndexes(string number, string fileContents) {
-            var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
-            var strings = new List<int>();
-            int start = 0;
-            while (start < fileContents.Length)
-            {
-                int index = fileContents.IndexOf(number, start);
-                if (index == -1)
-                    break;
-                else
-                {
-                    if (IsInCode(index, commentsAndQuotes))
-                    {
-                        if (!Char.IsLetterOrDigit(fileContents[index - 1]) &&
-                            !Char.IsLetterOrDigit(fileContents[index + number.Length])
-                        )
-                            strings.Add(index);
-                    }
-                    start = index + number.Length;
-                }
-            }
-            return strings;
+            return Indexes(number, fileContents, (x) => {
+                return
+                    !Char.IsLetterOrDigit(fileContents[x - 1]) &&
+                    !Char.IsLetterOrDigit(fileContents[x + number.Length]);
+            });
         }
 
         private bool IsInCode(int index, IEnumerable<(int, int)> commentsAndQuotes) {
