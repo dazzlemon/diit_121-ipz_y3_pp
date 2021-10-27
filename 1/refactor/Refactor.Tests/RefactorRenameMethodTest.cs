@@ -26,14 +26,7 @@ objectName2.func();"
 className2 objectName2;
 objectName1.method();
 objectName2.method();"
-            },
-            new object[] {"func", "method",
-@"void func ( void (*f)(int) );
-void func2 ( void (*func)(int) );"
-,
-@"void method ( void (*f)(int) );
-void func2 ( void (*method)(int) );"
-            },
+            },  
             new object[] {"func", "method",
 @"// void func(int parameter) some text
 void func(int parameter) {

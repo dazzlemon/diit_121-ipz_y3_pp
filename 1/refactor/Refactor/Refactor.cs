@@ -26,7 +26,10 @@ namespace Refactor {
                     }
 
                     if (inCode) {
-                        strings.Add(index);
+                        if(fileContents_[index - 1] == '.' ||
+                           fileContents_[index - 1] == ' '
+                            && fileContents_[index+oldName.Length] == '(')
+                            strings.Add(index);
                     }
                     start = index + oldName.Length;
                 }
