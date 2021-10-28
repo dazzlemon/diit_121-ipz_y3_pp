@@ -53,7 +53,7 @@ namespace Editor
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            File.WriteAllText(filePath, fileContent);
+            File.WriteAllText(filePath, textEditor.Text);
             System.Windows.MessageBox.Show("File is saved", "File status", MessageBoxButton.OK);
         }
 
