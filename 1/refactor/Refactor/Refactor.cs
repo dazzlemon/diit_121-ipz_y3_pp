@@ -47,36 +47,34 @@ namespace Refactor
             return str;
         }
 
-        private List<int> Indexes(string item, string fileContents, Func<int, bool> checkIndex) {
-            var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
-            var strings = new List<int>();
-            int start = 0;
-            while (start < fileContents.Length)
-            {
-                int index = fileContents.IndexOf(item, start);
-                if (index == -1)
-                {
-                    break;
-                }
-                else if (IsInCode(index, commentsAndQuotes) && checkIndex(index))
-                {
-                    strings.Add(index);
-                }
-                start = index + item.Length;
+        private IEnumerable<int> ItemIndexes(string item, string fileContents) {
+            for (
+                int start = 0,
+                    index = fileContents.IndexOf(item, start);
+                start < fileContents.Length && index != -1; 
+                start = index + item.Length,
+                    index = fileContents.IndexOf(item, start)
+            ) {
+                yield return index;
             }
-            return strings;
         }
 
-        private List<int> MethodIndexes(string name, string fileContents) {
+
+        private IEnumerable<int> Indexes(string item, string fileContents, Func<int, bool> checkIndex) {
+            var commentsAndQuotes = Comments(fileContents).Concat(Quotes(fileContents));
+            return ItemIndexes(item, fileContents)
+                .Where(i => IsInCode(i, commentsAndQuotes) && checkIndex(i));
+        }
+
+        private IEnumerable<int> MethodIndexes(string name, string fileContents) {
             return Indexes(name, fileContents, (x) => {
                 return
-                    fileContents[x - 1] == '.' ||
-                    fileContents[x - 1] == ' ' &&
+                    fileContents[x - 1] is '.' or ' ' &&
                     fileContents[x + name.Length] == '(';
             });
         }
 
-        private List<int> MagicNumberIndexes(string number, string fileContents) {
+        private IEnumerable<int> MagicNumberIndexes(string number, string fileContents) {
             return Indexes(number, fileContents, (x) => {
                 return
                     !Char.IsLetterOrDigit(fileContents[x - 1]) &&
