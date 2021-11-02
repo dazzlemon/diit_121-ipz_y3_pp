@@ -69,7 +69,7 @@ namespace Refactor
         private IEnumerable<int> MagicNumberIndexes(string number, string fileContents) {
             return Indexes(number, fileContents, (x) => {
                 return !("" + fileContents[x - 1] + fileContents[x + number.Length])
-                    .All(Char.IsLetterOrDigit);
+                    .Any(Char.IsLetterOrDigit);
             });
         }
 
