@@ -17,19 +17,11 @@ namespace Refactor
         public string ReplaceMagicNumber(string number, string CName, string fileContents)
         {
             var type = NumericType(number);
-            if (type is null)
-            {
-                throw new ArgumentException($"{number} is not a number");
-            }
-
             var strings = MagicNumberIndexes(number, fileContents);
-            if (!strings.Any())
-            {
-                return fileContents;
-            }
-
             fileContents = ReplaceByIndexes(fileContents, strings, number, CName);
-            return $"const {type} {CName} = {number};\r\n" + fileContents;
+            var prefix = strings.Any() ? $"const {type} {CName} = {number};\r\n"
+                                       : "";
+            return prefix + fileContents;
         }
 
         private string ReplaceByIndexes(string str, IEnumerable<int> indexes, string old, string new_)
@@ -37,12 +29,10 @@ namespace Refactor
             var indexes_ = new List<int>(indexes);
             for (int i = 0; i < indexes_.Count; i++)
             {
-                str = str
-                    .Remove(indexes_[i], old.Length)
-                    .Insert(indexes_[i], new_);
-                indexes_ = indexes_
-                    .Select(x => x - old.Length + new_.Length)
-                    .ToList();
+                str = str.Remove(indexes_[i], old.Length)
+                         .Insert(indexes_[i], new_);
+                indexes_ = indexes_.Select(x => x - old.Length + new_.Length)
+                                   .ToList();
             }
             return str;
         }
@@ -94,11 +84,15 @@ namespace Refactor
         }
 
         public string NumericType(string number) {
-            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
             bool isInteger = int.TryParse(number, out _);
-            return isInteger ? "int"
-                             : isDouble ? "double"
-                                        : null;
+            if (isInteger) {
+                return "int";
+            }
+            bool isDouble = Double.TryParse(number, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _);
+            if (isDouble) {
+                return "double";
+            }
+            throw new ArgumentException($"{number} is not a number");
         }
 
         public static IEnumerable<String> PairwiseStr(String str)
