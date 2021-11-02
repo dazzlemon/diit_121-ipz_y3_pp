@@ -66,21 +66,13 @@ namespace Refactor
 
         private IEnumerable<int> MagicNumberIndexes(string number, string fileContents) {
             return Indexes(number, fileContents, (x) => {
-                return
-                    !Char.IsLetterOrDigit(fileContents[x - 1]) &&
-                    !Char.IsLetterOrDigit(fileContents[x + number.Length]);
+                return !("" + fileContents[x - 1] + fileContents[x + number.Length])
+                    .All(Char.IsLetterOrDigit);
             });
         }
 
         private bool IsInCode(int index, IEnumerable<(int, int)> commentsAndQuotes) {
-            foreach (var range in commentsAndQuotes)
-            {
-                if (index > range.Item1 && index < range.Item2)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return !commentsAndQuotes.Any(r => index > r.Item1 && index < r.Item2);
         }
 
         public string NumericType(string number) {
