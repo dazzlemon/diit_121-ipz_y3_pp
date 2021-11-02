@@ -18,9 +18,11 @@ namespace Refactor
         {
             var type = NumericType(number);
             var strings = MagicNumberIndexes(number, fileContents);
-            fileContents = ReplaceByIndexes(fileContents, strings, number, CName);
-            var prefix = strings.Any() ? $"const {type} {CName} = {number};\r\n"
-                                       : "";
+            var prefix = "";
+            if (strings.Any()) {
+                prefix = $"const {type} {CName} = {number};\r\n";
+                fileContents = ReplaceByIndexes(fileContents, strings, number, CName);
+            }
             return prefix + fileContents;
         }
 
