@@ -26,9 +26,16 @@ namespace Editor
         private Refactor.Refactor Refactor = new Refactor.Refactor();
         private string filePath;
         private string fileContent;
+
+        private Action<object, RoutedEventArgs> command;
+
         public MainWindow()
         {
+            command = OpenFile_Click;
             InitializeComponent();
+            //add this one statement to bind a new keyboard command shortcut
+            //add a new key-binding, and pass in your command object instance which contains the Execute method which WPF will execute
+            InputBindings.Add(new KeyBinding(new WindowCommand(){ ExecuteDelegate = command }, new KeyGesture(Key.O, ModifierKeys.Control)));
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
