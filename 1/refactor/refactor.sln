@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio Version 16
-VisualStudioVersion = 16.6.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refactor", "Refactor\Refactor.csproj", "{E17FF432-4C0F-4C7F-A23A-7950E2E045E8}"
 EndProject
@@ -10,7 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{714C8180-2139-4BEE-8D62-D1A072F3B7E9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E17FF432-4C0F-4C7F-A23A-7950E2E045E8} = {E17FF432-4C0F-4C7F-A23A-7950E2E045E8}
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B} = {B0622570-BF7C-4B98-AE77-EF2A23C66F4B}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtherGroupRefactor", "OtherGroupRefactor\OtherGroupRefactor.csproj", "{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +61,18 @@ Global
 		{714C8180-2139-4BEE-8D62-D1A072F3B7E9}.Release|x64.Build.0 = Release|Any CPU
 		{714C8180-2139-4BEE-8D62-D1A072F3B7E9}.Release|x86.ActiveCfg = Release|Any CPU
 		{714C8180-2139-4BEE-8D62-D1A072F3B7E9}.Release|x86.Build.0 = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|x64.Build.0 = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B0622570-BF7C-4B98-AE77-EF2A23C66F4B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

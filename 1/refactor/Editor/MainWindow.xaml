@@ -19,6 +19,8 @@
             <MenuItem Header="Refactor">
                 <MenuItem Header="Method name" Click="RefactorMethodName_Click"></MenuItem>
                 <MenuItem Header="Magick number" Click="RefactorMagickNumber_Click"></MenuItem>
+                <MenuItem Header="Variable" Click="RefactorVariableName_Click"></MenuItem>
+                <MenuItem Header="Extract method" Click="RefactorExtractMethod_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <avalon:TextEditor

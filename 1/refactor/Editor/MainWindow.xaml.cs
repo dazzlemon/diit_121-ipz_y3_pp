@@ -14,7 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Refactor;
+
+
 
 namespace Editor
 {
@@ -24,6 +25,7 @@ namespace Editor
     public partial class MainWindow : Window
     {
         private Refactor.Refactor Refactor = new Refactor.Refactor();
+        private OtherGroupRefactor.Refactor OtherRefactor = new OtherGroupRefactor.Refactor();
         private string filePath;
         private Stack<string> previousStates = new Stack<string>();
         private Stack<string> history = new Stack<string>();
@@ -120,6 +122,36 @@ namespace Editor
                        magicNumberPropertiesWindow.MagicNumber,
                        magicNumberPropertiesWindow.NewMagicNumberName,
                        textEditor.Text);
+                textEditor.Text = refactoredText;
+            }
+        }
+
+        private void RefactorVariableName_Click(object sender, RoutedEventArgs e) 
+        {
+            VariablePropertiesWindow variablePropertiesWindow = new VariablePropertiesWindow();
+            if(variablePropertiesWindow.ShowDialog() == true) 
+            {
+                history.Push(textEditor.Text);
+                nextStates.Clear();
+                string refactoredText = OtherRefactor.RenameVariable(
+                    textEditor.Text,
+                    variablePropertiesWindow.OldVariableName,
+                    variablePropertiesWindow.NewVariableName);
+                textEditor.Text = refactoredText;
+            }        
+        }
+      
+        private void RefactorExtractMethod_Click(object sender, RoutedEventArgs e)
+        {
+            ExtractMethodPropertiesWindow extractMethodPropertiesWindow = new ExtractMethodPropertiesWindow();
+            if (extractMethodPropertiesWindow.ShowDialog() == true) 
+            {
+                history.Push(textEditor.Text);
+                nextStates.Clear();
+                string refactoredText = OtherRefactor.ExtractMethod(
+                    textEditor.Text,
+                    extractMethodPropertiesWindow.MethodContent,
+                    extractMethodPropertiesWindow.MethodName);
                 textEditor.Text = refactoredText;
             }
         }
