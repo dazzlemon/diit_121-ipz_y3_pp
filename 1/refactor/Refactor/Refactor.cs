@@ -17,14 +17,20 @@ namespace Refactor
         public string ReplaceMagicNumber(string number, string CName, string fileContents)
         {
             var type = NumericType(number);
-            var strings = MagicNumberIndexes(number, fileContents);
+            var magicNumberIndexes = MagicNumberIndexes(number, fileContents);
             var prefix = "";
-            if (strings.Any()) {
+            var constIndexes = Indexes(CName, fileContents, _ => true);
+            if (magicNumberIndexes.Any()) {
+                if (constIndexes.Any())
+                {
+                    CName += "_NEW";
+                }
                 prefix = $"const {type} {CName} = {number};\r\n";
-                fileContents = ReplaceByIndexes(fileContents, strings, number, CName);
+                fileContents = ReplaceByIndexes(fileContents, magicNumberIndexes, number, CName);
             }
             return prefix + fileContents;
         }
+
 
         private string ReplaceByIndexes(string str, IEnumerable<int> indexes, string old, string new_)
         {
