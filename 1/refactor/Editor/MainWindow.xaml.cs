@@ -25,17 +25,35 @@ namespace Editor
     {
         private Refactor.Refactor Refactor = new Refactor.Refactor();
         private string filePath;
-        private string fileContent;
-
-        private Action<object, RoutedEventArgs> command;
+        private Stack<string> previousStates = new Stack<string>();
+        private Stack<string> history = new Stack<string>();
+        private Stack<string> nextStates = new Stack<string>();   
 
         public MainWindow()
         {
-            command = OpenFile_Click;
             InitializeComponent();
-            //add this one statement to bind a new keyboard command shortcut
-            //add a new key-binding, and pass in your command object instance which contains the Execute method which WPF will execute
-            InputBindings.Add(new KeyBinding(new WindowCommand(){ ExecuteDelegate = command }, new KeyGesture(Key.O, ModifierKeys.Control)));
+            InputBindings.Add(new KeyBinding(new WindowCommand(){ ExecuteDelegate = OpenFile_Click }, new KeyGesture(Key.O, ModifierKeys.Control)));
+            InputBindings.Add(new KeyBinding(new WindowCommand(){ ExecuteDelegate = SaveFile_Click }, new KeyGesture(Key.S, ModifierKeys.Control)));
+            InputBindings.Add(new KeyBinding(new WindowCommand(){ ExecuteDelegate = SaveAsFile_Click }, new KeyGesture(Key.S, ModifierKeys.Control | ModifierKeys.Shift)));
+        }
+
+        private void Undo(object sender, RoutedEventArgs e) 
+        {
+            if (history.Count != 0)
+            {
+                nextStates.Push(textEditor.Text);
+                textEditor.Text = history.Pop();
+            }
+
+        }
+
+        private void Redo(object sender, RoutedEventArgs e)
+        {
+            if (nextStates.Count != 0)
+            {
+                history.Push(textEditor.Text);
+                textEditor.Text = nextStates.Pop();
+            }
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -51,9 +69,8 @@ namespace Editor
                     var fileStream = openFileDialog.OpenFile();
                     using (StreamReader reader = new StreamReader(fileStream))
                     {
-                        fileContent = reader.ReadToEnd();
+                        textEditor.Text  = reader.ReadToEnd();
                     }
-                    textEditor.Text = fileContent;
                 }
             }
         }
@@ -64,17 +81,31 @@ namespace Editor
             System.Windows.MessageBox.Show("File is saved", "File status", MessageBoxButton.OK);
         }
 
+        private void SaveAsFile_Click(object sender, RoutedEventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string filepath = saveFileDialog.FileName;
+                    File.WriteAllText(filepath, textEditor.Text);
+                    System.Windows.MessageBox.Show("File is saved", "File status", MessageBoxButton.OK);
+                }
+            }
+        }
+
         private void RefactorMethodName_Click(object sender, RoutedEventArgs e)
         {
             MethodPropertiesWindow methodPropertiesWindow = new MethodPropertiesWindow();
             if (methodPropertiesWindow.ShowDialog() == true)
             {
+                history.Push(textEditor.Text);
+                nextStates.Clear();
                 string refactoredText = Refactor.RenameMethod(
                     methodPropertiesWindow.OldMethodName,
                     methodPropertiesWindow.NewMethodName,
-                    fileContent);
+                    textEditor.Text);
                 textEditor.Text = refactoredText;
-                fileContent = refactoredText;
             }
         }
 
@@ -83,12 +114,13 @@ namespace Editor
             MagicNumberPropertiesWindow magicNumberPropertiesWindow = new MagicNumberPropertiesWindow();
             if (magicNumberPropertiesWindow.ShowDialog() == true) 
             {
+                history.Push(textEditor.Text);
+                nextStates.Clear();
                 string refactoredText = Refactor.ReplaceMagicNumber(
                        magicNumberPropertiesWindow.MagicNumber,
                        magicNumberPropertiesWindow.NewMagicNumberName,
-                       fileContent);
+                       textEditor.Text);
                 textEditor.Text = refactoredText;
-                fileContent = refactoredText;
             }
         }
     }

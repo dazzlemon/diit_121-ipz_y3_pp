@@ -12,6 +12,9 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open" Click="OpenFile_Click"></MenuItem>
                 <MenuItem Header="Save" Click="SaveFile_Click"></MenuItem>
+                <MenuItem Header="Save as..." Click="SaveAsFile_Click"></MenuItem>
+                <MenuItem Header="Undo" Click="Undo"></MenuItem>
+                <MenuItem Header="Redo" Click="Redo"></MenuItem>
             </MenuItem>
             <MenuItem Header="Refactor">
                 <MenuItem Header="Method name" Click="RefactorMethodName_Click"></MenuItem>
