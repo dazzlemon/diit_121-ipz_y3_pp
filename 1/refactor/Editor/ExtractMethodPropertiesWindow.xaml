@@ -24,7 +24,8 @@
         <TextBox Name="MethodContentTextBox"
                  Grid.Row="4"
                  MinWidth="250"
-
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
                  Grid.ColumnSpan="2">Method content</TextBox>
 
         <Grid Grid.Row="5"
